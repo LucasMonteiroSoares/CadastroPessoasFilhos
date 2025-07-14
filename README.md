@@ -19,7 +19,7 @@ Projeto desenvolvido como parte de um **processo seletivo para estágio DEV** na
 
 ## 🎥 Demonstração em vídeo
 
-[Assista ao vídeo no YouTube](https://youtu.be/dGc7RzIJ3PA))  
+[Assista ao vídeo no YouTube](https://youtu.be/dGc7RzIJ3PA)  
 
 ## 🚀 Como testar
 
