@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Micro-aplicação do Lucas Monteiro Soares </title>
+</head>
+
+<body>
+    <h1> Mini-aplicação estágio dev Turim  </h1>
+    <button> Gravar </button>
+    <button> Ler </button>
+    <p> Nome: <input id = "nomeParente"> <button onclick= "incluirNomeEBotoes()"> Incluir </button> </p>
+    
+    <table id = "tabelaPais" border = 1>
+        <tr>
+            <th> Pessoas </th>
+            <th> Ações </th>
+        </tr>
+
+    </table>
+
+    <div style="text-align: center;"> <textarea id = "jsonSaida" rows="30" cols="100"> </textarea> </div>
+    
+<!--anotação pessoal: tudo que estiver dentro dessa tag script abaixo, será sobre JavaScript--> 
+    <script>
+        let pessoas = [];
+
+        // Função para atualizar a textarea com o JSON
+        function atualizarJSON() {
+            document.getElementById('jsonSaida').value = JSON.stringify(pessoas, null, 2);
+        }
+
+        function incluirNomeEBotoes() {
+            // Captura o nome do input
+            let nomeParente = document.getElementById('nomeParente').value;
+            const tabela = document.getElementById('tabelaPais'); 
+            
+            // Adiciona a pessoa ao array
+            const novaPessoa = {
+                nome: nomeParente,
+                filhos: []
+            };
+            pessoas.push(novaPessoa);
+            
+            // Insere uma nova linha na tabela
+            const novaLinha = tabela.insertRow();
+            novaLinha.setAttribute('data-index', pessoas.length - 1);
+            const celulaNome = novaLinha.insertCell();
+            celulaNome.textContent = nomeParente;
+            const celulaBotoes = novaLinha.insertCell();
+            
+            // Botão "Deletar"
+            const botaoDelete = document.createElement('button');
+            botaoDelete.textContent = 'Remover';
+            celulaBotoes.appendChild(botaoDelete);
+            botaoDelete.onclick = function() {
+                // Remove do array
+                const index = parseInt(novaLinha.getAttribute('data-index'));
+                pessoas.splice(index, 1);
+                
+                // Remove da tabela
+                tabela.deleteRow(novaLinha.rowIndex);
+                
+                // Atualiza os índices das linhas restantes
+                const linhas = tabela.rows;
+                for (let i = 1; i < linhas.length; i++) {
+                    const currentIndex = parseInt(linhas[i].getAttribute('data-index'));
+                    if (currentIndex > index) {
+                        linhas[i].setAttribute('data-index', currentIndex - 1);
+                    }
+                }
+                atualizarJSON();
+            };
+            
+            // Botão "Adicionar Filhos"
+            const botaoAdicionar = document.createElement('button');
+            botaoAdicionar.textContent = 'Adicionar Filhos';
+            celulaBotoes.appendChild(botaoAdicionar);
+            botaoAdicionar.onclick = function(){
+                let nomeFilho = prompt("Informe o nome do filho: ");
+                const pessoaIndex = parseInt(novaLinha.getAttribute('data-index'));
+                
+                // Adiciona o filho ao array da pessoa
+                pessoas[pessoaIndex].filhos.push(nomeFilho);
+                
+                // Insere na tabela
+                const novaLinhaFilho = tabela.insertRow();
+                novaLinhaFilho.setAttribute('data-parent-index', pessoaIndex);
+                const celulaNomeFilho = novaLinhaFilho.insertCell();
+                celulaNomeFilho.textContent = nomeFilho + " (Filho de: " + nomeParente + ")";
+                const celulaBotoesFilho = novaLinhaFilho.insertCell();
+                const botaoDeleteFilho = document.createElement('button');
+                botaoDeleteFilho.textContent = 'Remover Filho';
+                celulaBotoesFilho.appendChild(botaoDeleteFilho);
+                botaoDeleteFilho.onclick = function() {
+                    // Remove o filho do array
+                    const parentIndex = parseInt(novaLinhaFilho.getAttribute('data-parent-index'));
+                    const filhoIndex = pessoas[parentIndex].filhos.indexOf(nomeFilho);
+                    if (filhoIndex > -1) {
+                        pessoas[parentIndex].filhos.splice(filhoIndex, 1);
+                    }
+                    
+                    // Remove da tabela
+                    tabela.deleteRow(novaLinhaFilho.rowIndex);
+                    atualizarJSON();
+                }
+                atualizarJSON();
+            }
+            atualizarJSON();
+        }
+    </script>
+</body>
+</html>
